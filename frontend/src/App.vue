@@ -1,8 +1,7 @@
-<template><div>
+<template>
   <img alt="Vue logo" src="./assets/logo.png">
   <HelloWorld msg="Welcome to Your Vue.js App"/>
-  <van-button type="primary">van button test</van-button>
-</div></template>
+</template>
 
 <script>
 import HelloWorld from './components/HelloWorld.vue'
