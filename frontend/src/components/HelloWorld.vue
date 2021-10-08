@@ -1,12 +1,13 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <van-button>VAN BUTTON </van-button>
+    <van-button @click="buttonHandler">VAN BUTTON </van-button>
   </div>
 </template>
 
 <script>
 import { Button } from 'vant';
+import { getAllImages } from '../api/api.js'
 
 export default {
   name: 'HelloWorld',
@@ -15,6 +16,14 @@ export default {
   },
   components: {
     [Button.name]: Button,
+  },
+  methods: {
+    buttonHandler(e) {
+      console.log('clicking the button', e)
+      getAllImages().then(data => {
+        console.log('handler:', data)
+      })
+    }
   }
 }
 </script>
