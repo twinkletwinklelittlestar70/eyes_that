@@ -1,16 +1,38 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div>
+  <h1>eye that game</h1>
+  <van-image
+  round
+  width="10rem"
+  height="10rem"
+  src="headimg"
+/>
+ 
+  <h2>can you recogni
+ which one is fake?</h2>
+ </div>
+
+  
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// import HelloWorld from './components/HelloWorld.vue'
+// import Vue from 'vue';
+import { Image as VanImage } from 'vant';
+
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    // HelloWorld
+    VanImage
+  },
+  data(){
+    return {
+      headimg: require("./assets/logo.png")
+    }
+          
+   }
 }
 </script>
 
