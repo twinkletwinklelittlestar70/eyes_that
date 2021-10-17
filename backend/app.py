@@ -54,7 +54,9 @@ def get_images():
 
     return jsonify(result)
 
-# Get all images randomly
+
+# Submit answers from FE.
+# Run prediction and return the accuracy
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_images():
     # TODO: Step1: 判断参数正常，不正常抛出业务异常。
@@ -65,7 +67,7 @@ def submit_images():
     result = recog_model.predict(task_id) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
     print('result =====> ', result)
 
-    # TODO: 计算模型准确率，并返回给前端
+    # TODO: Step3: 计算模型准确率，并返回给前端
     
     return jsonify({"error": 0})
 

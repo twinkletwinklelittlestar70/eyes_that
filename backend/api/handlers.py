@@ -16,7 +16,7 @@ def img_dir_handler(number):
         id_list = random.sample(range(1, config.MAX_FAKE_IMAGE_ID), int(num))
         for i in id_list:
             list.append({
-                "url": request.url_root + config.IMAGE_DIR + "/" + facetype + "/" + str(i) + ".png",
+                "url": request.url_root + config.IMAGE_DIR + "/" + facetype + "/" + str(i) + config.IMAGE_FORMAT,
                 "type": index,
             })
     
