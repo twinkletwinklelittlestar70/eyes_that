@@ -17,7 +17,11 @@ class Taskmanager():
   def get_task_byid (self, id):
     all_data = self.all_data
     if all_data[id] is not None:
-      return all_data[id]
+      data = all_data[id]
+      del all_data[id]
+      
+      return data
+    
     return None
 
 
