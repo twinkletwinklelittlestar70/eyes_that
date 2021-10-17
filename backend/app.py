@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import config
-import random
 from error import InvalidAPIError
+import utils
+from api.handlers import img_dir_handler
 
 # 通过 static_folder 指定静态资源路径，以便 index.html 能正确访问 CSS 等静态资源
 # template_folder 指定模板路径，以便 render_template 能正确渲染 index.html
@@ -12,11 +13,13 @@ app = Flask(
     static_url_path="/",
     template_folder="./static")
 
+# Error Handler
 @app.errorhandler(InvalidAPIError)
 def invalid_api_usage(e):
     return jsonify(e.to_dict())
 
-
+# Route Handler
+# Reture the page
 @app.route('/')
 def index():
     '''
@@ -30,9 +33,7 @@ def index():
 @app.route('/api/get_images', methods=['GET'])
 def get_images():
 
-    # if request.method != "GET":
     number_of_image = request.args.get('number')
-
     if number_of_image is None:
         raise InvalidAPIError("No number query", status_code=1) # 抛出业务异常。返回code和message
 
@@ -40,14 +41,16 @@ def get_images():
         "list": [],
         "error": 0
     }
+    # 随机选取一组图片
+    result["list"] = img_dir_handler(number_of_image)
+    # print('len list', len(result["list"]))
 
-    # TODO: fake or real 也改成随机
-    id_list = random.sample(range(1, config.max_image_id), int(number_of_image))    
-    for i in id_list:
-        result["list"].append({
-            "url": request.url_root + "images/fake/" + str(i) + ".png",
-            "type": 0
-        })
+    # 为这组图片成为任务id
+    task_id = utils.gen_uuid()
+    result["task_id"] = task_id
+    # TODO: store the task_id
+
+    # print('json', jsonify(result))
 
     return jsonify(result)
 
