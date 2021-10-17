@@ -1,5 +1,5 @@
 """
-    To rename and move real people face data from dataset to project folder
+    To transform fake face image format from png to jpg
 """
 import os
 from PIL import Image
