@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, jsonify
-from error import InvalidAPIError
-import utils
-from api.handlers import img_dir_handler
-from api.TaskManager import task_manager
-from api.Model import recog_model
-
+from .error import InvalidAPIError
+from .utils import gen_uuid
+from .api.handlers import img_dir_handler
+from .api.Model import recog_model
+from .api.TaskManager import task_manager
 # 通过 static_folder 指定静态资源路径，以便 index.html 能正确访问 CSS 等静态资源
 # template_folder 指定模板路径，以便 render_template 能正确渲染 index.html
 # static_url_path 指定访问的路径
@@ -34,7 +33,7 @@ def index():
 @app.route('/api/get_images', methods=['GET'])
 def get_images():
 
-    number_of_image = request.args.get('number')
+    number_of_image= request.args.get('number')
     if number_of_image is None:
         raise InvalidAPIError("No number query", status_code=1) # 抛出业务异常。返回code和message
 
@@ -47,7 +46,7 @@ def get_images():
     # print('len list', len(result["list"]))
 
     # 为这组图片成为任务id，并把任务存起来
-    task_id = utils.gen_uuid()
+    task_id = gen_uuid()
     result["task_id"] = task_id
     task_manager.add_task(task_id, result["list"])
 
@@ -61,14 +60,32 @@ def submit_images():
     # TODO: Step1: 判断参数正常，不正常抛出业务异常。
     # TODO: Step2: 从请求参数中取task_id，替换下面那个
 
-    task_id = '12345678'
+    data = request.json
+    task_id=data['task_id']
+    if task_id is None:
+        raise InvalidAPIError("No number query", status_code=1)  # 抛出业务异常。返回code和message
+
+
     # 模型预测
     result = recog_model.predict(task_id, is_multi_thread=True) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
     print('result =====> ', result)
+    all_score = {
+        "ai_score":{
+         "accuracy": 0},
+        "error": 0
+    }
 
     # TODO: Step3: 计算模型准确率，并返回给前端
+    sum_of_correct=None
+    for item in result:
+        img, predict, standard = item
+        if predict == standard:
+            sum_of_correct += 1
+    accuracy = sum_of_correct/len(result)
+    all_score["ai_score"]["accuracy"] = accuracy
+
     
-    return jsonify({"error": 0})
+    return jsonify(all_score)
 
 
 if __name__ == '__main__':

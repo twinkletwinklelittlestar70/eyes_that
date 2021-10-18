@@ -1,9 +1,11 @@
 """
     API handlers
 """
+import sys
+sys.path.append("..")
 from flask import request
 import random
-import config
+from .. import config
 
 def img_dir_handler(number):
     list = []

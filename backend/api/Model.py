@@ -3,9 +3,9 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 import numpy as np
 
-from api.TaskManager import task_manager
-from api import ThreadClass
-import config
+from .TaskManager import task_manager
+from . import ThreadClass
+from .. import config
 
 import time
 
