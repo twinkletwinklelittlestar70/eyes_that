@@ -1,10 +1,9 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify
 from error import InvalidAPIError
 import utils
 from api.handlers import img_dir_handler
-from queue import Queue
-from taskmanager import task_manager
-from api.model import recog_model
+from api.TaskManager import task_manager
+from api.Model import recog_model
 
 # 通过 static_folder 指定静态资源路径，以便 index.html 能正确访问 CSS 等静态资源
 # template_folder 指定模板路径，以便 render_template 能正确渲染 index.html
@@ -64,7 +63,7 @@ def submit_images():
 
     task_id = '12345678'
     # 模型预测
-    result = recog_model.predict(task_id) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
+    result = recog_model.predict(task_id, is_multi_thread=True) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
     print('result =====> ', result)
 
     # TODO: Step3: 计算模型准确率，并返回给前端
