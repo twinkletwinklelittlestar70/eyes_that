@@ -1,4 +1,8 @@
-backend/static/*
+backend/static/css/*
+backend/static/js/*
+backend/static/img/*
+backend/static/favicon.ico
+backend/static/index.html
 frontend/dist/*
 .DS_Store
 backend/.DS_Store

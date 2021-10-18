@@ -76,9 +76,11 @@ def submit_images():
     }
 
     # TODO: Step3: 计算模型准确率，并返回给前端
-    sum_of_correct=None
+    sum_of_correct=0
     for item in result:
-        img, predict, standard = item
+        img=item['img']
+        standard=item['standard']
+        predict=item['predict']
         if predict == standard:
             sum_of_correct += 1
     accuracy = sum_of_correct/len(result)
