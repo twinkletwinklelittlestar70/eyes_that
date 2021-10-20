@@ -5,20 +5,24 @@
  * @argument {https://cli.vuejs.org/zh/config/#vue-config-js}
  */
  module.exports = {
-    // 选项...
-    publicPath: './',
-    devServer: {
+   //选项
+   publicPath:'./',
+   devServer:{
+     useLocalIp:true,
+     host:'0.0.0.0',
+     https:false,
+     //使用代理
+     proxy:{
+       '/api':{
 
-      host: '0.0.0.0',
-      https: false,
-      /* 使用代理 */
-      proxy: {
-          '/api': {
-              /* 目标代理服务器地址 */
-              target: 'http://127.0.0.1:5000/',
-              /* 允许跨域 */
-              changeOrigin: true,
-          },
-      }
+
+         /*目标代理服务器地址*/
+         target:'http://127.0.0.1:8080/',
+         /*允许跨域*/
+         changeOrigin:true,
+       },
+     }
     }
   }
+
+   
