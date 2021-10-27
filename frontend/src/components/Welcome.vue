@@ -14,23 +14,23 @@
 
    <h3>let's try it now</h3>
 
-   <button @click="hreftwo" class="test-one">Start</button>
+   <button v-on:click="hreftwo" class="test-one">Start</button>
 
 </div>
 </template>
 
 <script>
-
+import router from "../router/index.js";
 
 export default {
   name: 'App',
   components: {
     // HelloWorld
-    // VanImage
   },
-  method:{
+  methods:{
     hreftwo(){
-      this.$router.push({path:'/'})
+      console.log('testwhat')
+      router.push("/game");
     }
   },
   data(){

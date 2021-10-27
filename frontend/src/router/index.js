@@ -1,21 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HelloWorld from '../components/HelloWorld.vue'
+import Result from '../components/Result.vue'
 import NotFound from '../components/NotFound.vue'
-import FirstPage from '../components/FirstPage.vue'
-import SecondPage from '../components/SecondPage.vue'
+import Welcome from '../components/Welcome.vue'
+import Game from '../components/Game.vue'
 
 const routes = [{
     path: '/index', // 欢迎页面。包含游戏规则等。
-    name:'FirstPage',
-    component: FirstPage
+    name:'Welcome',
+    component: Welcome
  }, {
-    path: '/game',  // 游戏页面。包含
-    name:'SecondPage',
-    component: SecondPage
+    path: '/game',  // 游戏页面。包含游戏进行时的数据
+    name:'Game',
+    component: Game
  }, {
-    path: '/result',
-    name:'HelloWorld',
-    component: HelloWorld
+    path: '/result',  // 结果页面。展示准确率和who winds
+    name:'Result',
+    component: Result
  }, {
   path: '/:pathMatch(.*)*', 
   name: 'NotFound', 
