@@ -1,47 +1,69 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <van-button @click="buttonHandler">VAN BUTTON </van-button>
-  </div>
+<div>
+    <h1>eye that game</h1>
+    <van-image
+    round
+    width="10rem"
+    height="10rem"
+    :src="srcString"
+  />
+  <img src="../assets/logo1.png"/>
+  
+    <h2>can you recogniza
+   which one is fake?</h2>
+
+   <h3>let's try it now</h3>
+
+   <button @click="hreftwo" class="test-one">Start</button>
+
+</div>
 </template>
 
 <script>
-import { Button } from 'vant';
-import { getAllImages } from '../api/api.js'
+
 
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  },
+  name: 'App',
   components: {
-    [Button.name]: Button,
+    // HelloWorld
+    // VanImage
   },
-  methods: {
-    buttonHandler(e) {
-      console.log('clicking the button', e)
-      getAllImages().then(data => {
-        console.log('handler:', data)
-      })
+  method:{
+    hreftwo(){
+      this.$router.push({path:'/'})
     }
+  },
+  data(){
+    return {
+      // headimg: require("../assets/logo.png"),
+      srcString: "../assets/logo.png"
+    }     
+   }
+  
   }
-}
+
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+.test-one { 
+  margin: 0 auto;
+  
+  border: none;
+  color: #fff;
+  width: 100%;
+  padding: 1rem 0;
+  border-radius: 4px;
+  font-size: 1.6rem;
+  background: #435875;
+  
+ }
+
 </style>
