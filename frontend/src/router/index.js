@@ -5,14 +5,14 @@ import FirstPage from '../components/FirstPage.vue'
 import SecondPage from '../components/SecondPage.vue'
 
 const routes = [{
-    path: '/index',
+    path: '/index', // 欢迎页面。包含游戏规则等。
     name:'FirstPage',
     component: FirstPage
  }, {
-    path: '/game',
+    path: '/game',  // 游戏页面。包含
     name:'SecondPage',
     component: SecondPage
- }, {                       // 下面两个是示范应该怎么写页面
+ }, {
     path: '/result',
     name:'HelloWorld',
     component: HelloWorld
