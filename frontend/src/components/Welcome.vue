@@ -21,7 +21,7 @@
 
 <script>
 import router from "../router/index.js";
-
+import {v4 as uuidv4} from 'uuid';
 export default {
   name: 'App',
   components: {
@@ -30,11 +30,19 @@ export default {
   methods:{
     hreftwo(){
       console.log('testwhat')
-      router.push("/game");
+      let myuuid = uuidv4()
+      console.log(myuuid)
+      router.push({
+          path: '/game',
+          query: {
+            id: myuuid
+          }
+        })
     }
   },
   data(){
     return {
+      myuuid:'',
       // headimg: require("../assets/logo.png"),
       srcString: "../assets/logo.png"
     }     
