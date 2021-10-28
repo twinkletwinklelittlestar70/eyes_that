@@ -61,13 +61,14 @@ def submit_images():
     # TODO: Step2: 从请求参数中取task_id，替换下面那个
 
     data = request.json
-    task_id=data['task_id']
+    task_id = data['task_id']
+    print('submit_answers for task', task_id)
+
     if task_id is None:
         raise InvalidAPIError("No number query", status_code=1)  # 抛出业务异常。返回code和message
 
-
     # 模型预测
-    result = recog_model.predict(task_id, is_multi_thread=True) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
+    result = recog_model.predict(task_id, is_multi_thread=False) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
     print('result =====> ', result)
     all_score = {
         "ai_score":{
@@ -78,7 +79,7 @@ def submit_images():
     # TODO: Step3: 计算模型准确率，并返回给前端
     sum_of_correct=0
     for item in result:
-        img=item['img']
+        img = item['img']
         standard=item['standard']
         predict=item['predict']
         if predict == standard:
