@@ -16,4 +16,5 @@ IMAGE_FORMAT = '.jpg'
 
 MODEL_PATH = './model/grayscale_densenet.h5' # path to load model
 INPUT_SIZE = (224, 224, 1)
+INPUT_SIZE_2D = (224, 224)
 #----------------------------------------------------------------------------

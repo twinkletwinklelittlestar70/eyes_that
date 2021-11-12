@@ -16,7 +16,7 @@ class RecogModel():
     pass
 
 
-  def predictImage(self, filepath):
+  def predictImage(self, filepath, image_data=None):
     '''Predic one image
 
     The function will read the imags data from disk, put image
@@ -30,10 +30,14 @@ class RecogModel():
         1: for real face
     '''
     # 预处理图片
-    print('loading image', filepath)
-    img = image.load_img(filepath, grayscale=True, target_size=config.INPUT_SIZE)
+    if len(filepath) > 0:
+        print('loading image', filepath)
+        img = image.load_img(filepath, grayscale=True, target_size=config.INPUT_SIZE)
+    else:
+        img = image_data
     input_arr = image.img_to_array(img)
     input_rescale = np.array([input_arr])
+    
     # 模型识别
     result = self.model.predict(input_rescale)
     isReal = result[0][0] >= 0.5 # >= 0.5 表示 real, <0.5 表示 fake
@@ -70,9 +74,9 @@ class RecogModel():
     print(task_list)
     result = []
 
-    # 单线程用时 2.7627809047698975 s
-    # 10个多线程用时 4.012258052825928 s
-    # 2个多线程用时 2.3256211280822754 s
+    # single thread time cost 2.7627809047698975 s
+    # 10 threads time cost 4.012258052825928 s
+    # 2 threads time cost 2.3256211280822754 s
     if is_multi_thread:
         # 10个线程版本
         # thread_list = []
@@ -101,7 +105,7 @@ class RecogModel():
         
         # return result
         
-        # 2个线程版本
+        # 2 thread is the fast one
         time_start=time.time()
 
         thread_list = []

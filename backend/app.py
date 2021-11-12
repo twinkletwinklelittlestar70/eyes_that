@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, jsonify
+import numpy as np
+import cv2
 from .error import InvalidAPIError
 from .utils import gen_uuid
 from .api.handlers import img_dir_handler
 from .api.Model import recog_model
 from .api.TaskManager import task_manager
+from . import config
+
 # 通过 static_folder 指定静态资源路径，以便 index.html 能正确访问 CSS 等静态资源
 # template_folder 指定模板路径，以便 render_template 能正确渲染 index.html
 # static_url_path 指定访问的路径
@@ -57,13 +61,12 @@ def get_images():
 # Run prediction and return the accuracy
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_images():
-    # TODO: Step1: 判断参数正常，不正常抛出业务异常。
-    # TODO: Step2: 从请求参数中取task_id，替换下面那个
 
     data = request.json
     task_id = data['task_id']
     print('submit_answers for task', task_id)
 
+    # Step1: 判断参数正常，不正常抛出业务异常。
     if task_id is None:
         raise InvalidAPIError("No number query", status_code=1)  # 抛出业务异常。返回code和message
 
@@ -76,7 +79,7 @@ def submit_images():
         "error": 0
     }
 
-    # TODO: Step3: 计算模型准确率，并返回给前端
+    # Step3: 计算模型准确率，并返回给前端
     sum_of_correct=0
     for item in result:
         img = item['img']
@@ -89,6 +92,25 @@ def submit_images():
 
     
     return jsonify(all_score)
+
+# 用户上传图片,AI 识别，并返回识别结果 
+@app.route('/api/upload_to_recog', methods=['POST', 'PUT'])
+def image_upload():
+    # get upload image, preprocess and do the recognition
+    try:
+        filestr = request.files['file'].read()
+        npimg = np.fromstring(filestr, np.uint8)
+        img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
+        resized = cv2.resize(img, config.INPUT_SIZE_2D)
+
+        result = recog_model.predictImage(filepath='', image_data=resized)
+        return_data = {"is_real": result, "error": 0}
+
+    except Exception as e:
+        print("Upload: An exception occurred", e)
+        return_data = {"error": 1002}
+
+    return jsonify(return_data)
 
 
 if __name__ == '__main__':

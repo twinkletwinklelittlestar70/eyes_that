@@ -3,6 +3,7 @@ import Result from '../components/Result.vue'
 import NotFound from '../components/NotFound.vue'
 import Welcome from '../components/Welcome.vue'
 import Game from '../components/Game.vue'
+import TakePicture from '../components/TakePicture.vue'
 
 const routes = [{
     path: '/index', // 欢迎页面。包含游戏规则等。
@@ -17,6 +18,10 @@ const routes = [{
     name:'Result',
     component: Result
  }, {
+   path: '/picture',  // 结果页面。展示准确率和who winds
+   name:'TakePicture',
+   component: TakePicture
+}, {
   path: '/:pathMatch(.*)*', 
   name: 'NotFound', 
   component: NotFound

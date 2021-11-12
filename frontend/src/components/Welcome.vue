@@ -14,10 +14,8 @@
 
    <h3>let's try it now</h3>
 
-   <button v-on:click="hreftwo" class="test-one" style="
-   width:80px;
-   height:80px;
-   border-radius:50%">Start</button>
+   <button v-on:click="hreftwo" class="primary-button circle-button" >Start</button>
+   <button v-on:click="routeToPicture" class="primary-button" >Try your picture</button>
 
 </div>
 </template>
@@ -41,6 +39,11 @@ export default {
             id: myuuid
           }
         })
+    },
+    routeToPicture() {
+      router.push({
+          path: '/picture'
+      })
     }
   },
   data(){
@@ -65,9 +68,8 @@ export default {
   margin-top: 60px;
 }
 
-.test-one { 
-  margin: 0 auto;
-  
+.primary-button {
+  margin: 20px auto;
   border: none;
   color: #fff;
   width: 100%;
@@ -75,6 +77,12 @@ export default {
   border-radius: 4px;
   font-size: 1.6rem;
   background: #172f50;
+}
+
+.circle-button { 
+  width:80px;
+  height:80px;
+  border-radius:50%
  }
 
  .tupian { 
