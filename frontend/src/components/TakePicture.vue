@@ -11,7 +11,6 @@
         :multiple="false"
         preview-size="150px"
         :show-upload="showUpload"
-        capture
       />
     </div>
     <van-button
