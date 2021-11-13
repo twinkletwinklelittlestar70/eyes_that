@@ -1,9 +1,8 @@
 <template>
   <div class="take-picture">
-    <h1>Take picture</h1>
+    <h1>Challenge the AI</h1>
     <p>
-      This is a description text to explain what is the game is the game is the
-      game is the game
+      Want to challenge our AI? Please upload a picture and AI will tell you if there is a fake face included! If you are not sure where to find fake face pictures, try search "stylegan fake face" on google and get pictures from picture results!
     </p>
     <div class="uploader">
       <van-uploader
@@ -21,7 +20,7 @@
       >Try it now</van-button
     >
     <div v-show="showAnswer" class="response-container">
-      AI answer: {{answer? 'Real' : 'Fake'}}
+      AI answer: {{answer? 'Fake face detected' : 'No fake face'}}
     </div>
   </div>
 </template>
@@ -38,7 +37,8 @@ export default {
       fileList: [],
       uploading: false,
       showAnswer: false,
-      answer: 1 // 0: fake, 1: real
+      answer: false, // true: fake detected, false: not detected
+      facesCoordinates: []
     };
   },
   computed: {
@@ -59,11 +59,12 @@ export default {
       uploadAndRecognizeImage(this.fileList[0].file).then((data) => {
         console.log('test upload and recognize return', data)
         this.uploading = false;
-        if (!data) {
+        if (!data || !data.is_real) {
           return
         }
         this.showAnswer = true;
-        this.answer = data.is_real
+        this.answer = data.is_real.filter(i => i === 0).length > 0
+        this.facesCoordinates = data.coordinates
       })
     },
   },

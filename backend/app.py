@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import numpy as np
-import cv2
+# import cv2
 from .error import InvalidAPIError
 from .utils import gen_uuid
 from .api.handlers import img_dir_handler
@@ -27,8 +27,8 @@ def invalid_api_usage(e):
 @app.route('/')
 def index():
     '''
-        当在浏览器访问网址时，通过 render_template 方法渲染 dist 文件夹中的 index.html。
-        页面之间的跳转交给前端路由负责，后端不用再写大量的路由
+        When browser access this router，use render_template to render ./static/dist/index.html.
+        Page router would be handled by the fe itself.
     '''
     return render_template("index.html")
 
@@ -37,19 +37,20 @@ def index():
 @app.route('/api/get_images', methods=['GET'])
 def get_images():
 
-    number_of_image= request.args.get('number')
+    number_of_image = request.args.get('number')
     if number_of_image is None:
-        raise InvalidAPIError("No number query", status_code=1) # 抛出业务异常。返回code和message
+        # 抛出业务异常。返回code和message
+        raise InvalidAPIError("No number query", status_code=1)
 
     result = {
         "list": [],
         "error": 0
     }
-    # 随机选取一组图片
+    # random pick a group of images
     result["list"] = img_dir_handler(number_of_image)
     # print('len list', len(result["list"]))
 
-    # 为这组图片成为任务id，并把任务存起来
+    # generate task_id and save the task
     task_id = gen_uuid()
     result["task_id"] = task_id
     task_manager.add_task(task_id, result["list"])
@@ -66,49 +67,49 @@ def submit_images():
     task_id = data['task_id']
     print('submit_answers for task', task_id)
 
-    # Step1: 判断参数正常，不正常抛出业务异常。
+    # Step1: check the paramters
     if task_id is None:
-        raise InvalidAPIError("No number query", status_code=1)  # 抛出业务异常。返回code和message
+        # throw error
+        raise InvalidAPIError("No number query", status_code=1)
 
-    # 模型预测
-    result = recog_model.predict(task_id, is_multi_thread=False) # 预测的结果，类似这样 [{img:'xxx', 'predict':0, 'standard': 1}]
+    # predict
+    # result of prediction looks like this: [{img:'xxx', 'predict':0, 'standard': 1}]
+    result = recog_model.predict(task_id, is_multi_thread=False)
     print('result =====> ', result)
     all_score = {
-        "ai_score":{
-         "accuracy": 0},
+        "ai_score": {
+            "accuracy": 0},
         "error": 0
     }
 
-    # Step3: 计算模型准确率，并返回给前端
-    sum_of_correct=0
+    # Step3: calculate the accuracy and return
+    sum_of_correct = 0
     for item in result:
         img = item['img']
-        standard=item['standard']
-        predict=item['predict']
+        standard = item['standard']
+        predict = item['predict']
         if predict == standard:
             sum_of_correct += 1
     accuracy = sum_of_correct/len(result)
     all_score["ai_score"]["accuracy"] = accuracy
 
-    
     return jsonify(all_score)
 
-# 用户上传图片,AI 识别，并返回识别结果 
+# Recognize the image user uploaded and return result
 @app.route('/api/upload_to_recog', methods=['POST', 'PUT'])
 def image_upload():
     # get upload image, preprocess and do the recognition
     try:
         filestr = request.files['file'].read()
         npimg = np.fromstring(filestr, np.uint8)
-        img = cv2.imdecode(npimg, cv2.IMREAD_GRAYSCALE)
-        resized = cv2.resize(img, config.INPUT_SIZE_2D)
 
-        result = recog_model.predictImage(filepath='', image_data=resized)
-        return_data = {"is_real": result, "error": 0}
+        result, faces_coordinate = recog_model.predicAnyImage(image_data=npimg)
+
+        return_data = {"is_real": result, "error": 0, "coordinates": faces_coordinate}
 
     except Exception as e:
         print("Upload: An exception occurred", e)
-        return_data = {"error": 1002}
+        raise InvalidAPIError("prediction error", status_code=2)
 
     return jsonify(return_data)
 
