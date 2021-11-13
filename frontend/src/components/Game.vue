@@ -26,6 +26,7 @@
 
 <script>
 import { Image as VanImage } from 'vant';
+import router from "../router/index.js";
 import axios from 'axios';
 export default {
   name: 'App',
@@ -49,10 +50,16 @@ export default {
     this.ans.push(0)
   },
   submit(){
-    let that=this
+    let _that=this
+    var i
+    for (i=0;i<10;i++)
+    {
+      if(_that.ans[i]==_that.list[i].type)
+        _that.right=_that.right+1
+    }
    axios.post('/api/submit_answers', JSON.stringify(
      {
-    task_id: that.taskid
+    task_id: _that.taskid
   }),
   {headers:{
     'Content-Type':'application/json'
@@ -60,20 +67,35 @@ export default {
 
   })
   .then(function (response) {
-    console.log(response);
+    console.log("sljfdl")
+    console.log(response.data.ai_score.accuracy);
+    _that.aiscore=response.data.ai_score.accuracy
+    console.log(_that.aiscore)
+     router.push({
+          path: '/result',
+          query: {
+            aiscore:_that.aiscore,
+            right:_that.right
+          }
+        })
+   
   })
   .catch(function (error) {
     console.log(error);
   });
+
+ 
+  
   }
   },
   created() {
   // Simple GET request using axios
-  this.uuid = this.$route.query.id
-  console.log(this.myuuid)
+  // this.uuid = this.$route.query.id
+  // console.log(this.myuuid)
   let that =this
   axios.get("/api/get_images?number=10",)
-    .then(response => {that.list = response.data.list, that.taskid=response.data.task_id,that.srcString=that.list[0].url});
+    .then(response => {console.log(response),
+      that.list = response.data.list, that.taskid=response.data.task_id,that.srcString=that.list[0].url});
 },
  
   data() {
@@ -81,8 +103,10 @@ export default {
       url:'',
       index:0,
       list:[],
+      aiscore:0,
       ans:[],
-      myuuid:this.$route.query.id,
+      right:0,
+      // myuuid:this.$route.query.id,
       headimg: require("../assets/logo.png"),
       srcString:'',
       tag:false
