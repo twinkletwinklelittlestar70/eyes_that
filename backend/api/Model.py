@@ -180,7 +180,7 @@ class RecogModel():
 
             return result
 
-    def predicAnyImage (self, image_data=None):
+    def predicAnyImage (self, image_data=None, face_detection=False):
         if image_data is None:
             return [],[]
         
@@ -188,45 +188,52 @@ class RecogModel():
         # gray = cv2.imdecode(image_data, cv2.IMREAD_GRAYSCALE)
         gray = cv2.imdecode(image_data, cv2.IMREAD_GRAYSCALE)
         (o_r, o_c) = gray.shape
+        faces_to_recog = []
 
-        try:
-            # Face detection
-            faces_coordinate = self.face_cascade.detectMultiScale(gray, 1.3, 1)
-        except Exception as e:
-            faces_coordinate = []
-            print('Face detection error: ', e)
-        
-        if len(faces_coordinate) == 0:
-            print('No faces were detected')
-            return [], []
+        if face_detection:
 
-        print(len(faces_coordinate), ' faces were detected', faces_coordinate)
-        
-        # Find all the face and crops them
-        cropped_faces = []
-        coords_list = []
-        # index = 0
-        for (x, y, w, h)  in faces_coordinate:
-            exp = 0.3
-            y1 = int(max(0, y - exp * h))
-            y2 = int(min(y + (1 + exp) * h, o_r))
-            x1 = int(max(0, x - exp * w))
-            x2 = int(min(x + (1 + exp) * w, o_c))
-            print('crop area', y1, y2, x1, x2)
-            cropped_image = gray[y1:y2, x1:x2]
-            
-            cropped_faces.append(cropped_image)# (1024, 1024)   [y:y+h, x:x+w] [[187 214 675 675]]
-            
-            # test code to save image to check the crop scale
-            # my_file = os.path.join('/Users/karenlin/workspace/eyes_that/backend/', 'test' + str(index) + '.jpg')
-            # print('write', my_file)
-            # cv2.imwrite(my_file, cropped_image)
-            # index += 1
+            try:
+                # Face detection
+                faces_coordinate = self.face_cascade.detectMultiScale(gray, 1.3, 1)
+            except Exception as e:
+                faces_coordinate = []
+                print('Face detection error: ', e)
 
-            coords_list.append([int(x), int(y), int(w), int(h)])
+            if len(faces_coordinate) == 0:
+                print('No faces were detected')
+                return [], []
+
+            print(len(faces_coordinate), ' faces were detected', faces_coordinate)
+
+            # Find all the face and crops them
+            cropped_faces = []
+            coords_list = []
+            # index = 0
+            for (x, y, w, h)  in faces_coordinate:
+                exp = 0.3
+                y1 = int(max(0, y - exp * h))
+                y2 = int(min(y + (1 + exp) * h, o_r))
+                x1 = int(max(0, x - exp * w))
+                x2 = int(min(x + (1 + exp) * w, o_c))
+                print('crop area', y1, y2, x1, x2)
+                cropped_image = gray[y1:y2, x1:x2]
+
+                cropped_faces.append(cropped_image)# (1024, 1024)   [y:y+h, x:x+w] [[187 214 675 675]]
+
+                # test code to save image to check the crop scale
+                # my_file = os.path.join('/Users/karenlin/workspace/eyes_that/backend/', 'test' + str(index) + '.jpg')
+                # print('write', my_file)
+                # cv2.imwrite(my_file, cropped_image)
+                # index += 1
+
+                coords_list.append([int(x), int(y), int(w), int(h)])
+                faces_to_recog = cropped_faces
+        else: 
+            faces_to_recog = [gray]
+            coords_list = []
 
         result = []
-        for face_image in cropped_faces: # [gray]:  cropped_faces:
+        for face_image in faces_to_recog:
             print('shape of face image', face_image.shape)
             result.append(self.predictImage(filepath='', image_data = face_image))
         

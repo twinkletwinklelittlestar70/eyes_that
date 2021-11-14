@@ -10,11 +10,11 @@
     class="app"
   />
   <h3> </h3>
-  <button v-on:click="guessreal" class="test-one" style="
+  <button v-if="!tag" v-on:click="guessreal" class="test-one" style="
    width:130px;
    height:60px">real</button>
     <h4> </h4>
-  <button v-on:click="guessfake" class="test-one" style="
+  <button v-if="!tag" v-on:click="guessfake" class="test-one" style="
    width:130px;
    height:60px">fake</button>
    <h5> </h5>
